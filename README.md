@@ -15,6 +15,7 @@ Mastoidectomy Procedures​ are highly precise surgeries that require the drilli
 
 ## 1. Team Information
 **Team Members:** Aditya Khandeshi, Liza Naydanova, Alexandra Szewc
+
 **Mentors:** Max Li, Adnan Munawar, Dr. Danielle Trakimas, Nimesh Nagururu, Dr. Creighton, Dr. Unberath, Dr. Taylor
 
 ## 2. Repository Contents
