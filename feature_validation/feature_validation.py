@@ -50,10 +50,10 @@ def validate_procedure_duration(f, exp):
 
     _, _, v_rm = open_file(f)
 
-    dur = 0
-
-    if np.array(v_rm).any():
+    try:
         dur = ft.procedure_duration(v_rm['time_stamp'][()])
+    except:
+        dur = 0
 
     print(f, ' duration: ', dur)
 
