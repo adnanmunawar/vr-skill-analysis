@@ -17,6 +17,6 @@ size = l_img[0].shape[:2]
 # Write images to video
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 video = cv2.VideoWriter('vid.mp4', fourcc, 25, (size[1], size[0]))
-for frame in range(500):
+for frame in range(len(l_img)):
     video.write(l_img[frame])
 video.release()

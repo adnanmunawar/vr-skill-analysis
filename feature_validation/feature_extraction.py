@@ -8,6 +8,17 @@ from scipy import integrate
 
 
 def stats_per_stroke(stroke_arr: np.ndarray):
+    '''
+    The mean, median, and max of a list of values.
+
+        Parameters:
+            stroke_arr (np.ndarray): Values across strokes of a procedure
+
+        Returns:
+            mean (np.ndarray): mean of values
+            med_ (np.ndarray): median of values
+            max_ (np.ndarray): maximum of values
+    '''
 
     mean = np.mean(stroke_arr)
     med_ = np.median(stroke_arr)
@@ -17,6 +28,20 @@ def stats_per_stroke(stroke_arr: np.ndarray):
 
 
 def get_strokes(stream: np.ndarray, timepts: np.ndarray, k=6):
+    '''
+    Returns a list of 1's and 0's indicating whether a stroke has
+    ended at the timestamp at its index and the timestamps.
+
+        Parameters:
+            stream (np.ndarray): Drill poses over course of procedure
+            timepts (np.ndarray): Time stamps of all drill poses
+
+        Returns:
+            F_c (np.ndarray): List of 1's and 0's indicating whether a
+                              stroke has ended at the timestamp at its index
+            st (np.ndarray): Timestamps of stroke ends
+    '''
+
     stream = stream[:, :3]
     X_P = []
 
@@ -67,6 +92,19 @@ def get_strokes(stream: np.ndarray, timepts: np.ndarray, k=6):
 
 def stroke_force(strokes: np.ndarray, stroke_times: np.ndarray,
                  force_stream: np.ndarray, force_times: np.ndarray):
+    '''
+    Returns a list of stroke forces representing mean force of
+    each stroke of the procedure.
+
+        Parameters:
+            strokes (np.ndarray): List of 1's and 0's indicating whether a stroke has ended at the timestamp at its index
+            stroke_times (np.ndarray): Time stamps of stroke boundaries
+            force_stream (np.ndarray): Force vectors over course of procedure
+            force_times (np.ndarray): Time stamps of all force vectors
+
+        Returns:
+            forces (np.ndarray): Average stroke forces for each stroke in procedure
+    '''
 
     avg_stroke_force = []
     for i in range(sum(strokes)):
@@ -80,6 +118,16 @@ def stroke_force(strokes: np.ndarray, stroke_times: np.ndarray,
 
 
 def stroke_length(strokes: np.ndarray, stream: np.ndarray):
+    '''
+    Returns a list of stroke lengths for each stroke of the procedure.
+
+        Parameters:
+            strokes (np.ndarray): List of 1's and 0's indicating whether a stroke has ended at the timestamp at its index
+            stream (np.ndarray): Drill poses over course of procedure
+
+        Returns:
+            lens (np.ndarray): Length for each stroke in procedure in units of drill position
+    '''
 
     stream = stream[:, :3]
 
@@ -99,6 +147,19 @@ def stroke_length(strokes: np.ndarray, stream: np.ndarray):
 
 def bone_removal_rate(strokes: np.ndarray, stroke_times: np.ndarray,
                       stream: np.ndarray, voxel_times: np.ndarray):
+    '''
+    Returns a list of bone removal rates representing mean rate of
+    each stroke of the procedure.
+
+        Parameters:
+            strokes (np.ndarray): List of 1's and 0's indicating whether a stroke has ended at the timestamp at its index
+            stroke_times (np.ndarray): Time stamps of stroke boundaries
+            stream (np.ndarray): Drill poses over course of procedure
+            voxel_times (np.ndarray): Time stamps of all removed voxels
+
+        Returns:
+            rate (np.ndarray): Average bone removal rate for each stroke in procedure
+    '''
 
     vox_rm = []
     for i in range(sum(strokes)):
@@ -114,13 +175,41 @@ def bone_removal_rate(strokes: np.ndarray, stroke_times: np.ndarray,
 
 
 def procedure_duration(timepts: np.ndarray):
+    '''
+    Returns a duration of procedure from first to last voxel removal.
+    NOTE: Requires that voxels are removed
+
+        Parameters:
+            timepts (np.ndarray): Time stamps of all voxel removals
+
+        Returns:
+            int: Duration of surgucal procedure given
+    '''
+
     return (max(timepts) - min(timepts))
 
 
-def drill_orientation(stream: np.ndarray, timepts: np.ndarray,
+def drill_orientation(strokes: np.ndarray, stroke_times: np.ndarray,
+                      stream: np.ndarray, timepts: np.ndarray,
                       force_stream: np.ndarray, force_times: np.ndarray):
+    '''
+    Returns a list of drill angles representing mean angle of
+    each stroke of the procedure.
+
+        Parameters:
+            strokes (np.ndarray): List of 1's and 0's indicating whether a stroke has ended at the timestamp at its index
+            stroke_times (np.ndarray): Time stamps of stroke boundaries
+            stream (np.ndarray): Drill poses over course of procedure
+            timepts (np.ndarray): Time stamps of all drill poses
+            force_stream (np.ndarray): Force vectors over course of procedure
+            force_times (np.ndarray): Time stamps of all force vectors
+
+        Returns:
+            angles (np.ndarray): Average drill angles for each stroke in procedure
+    '''
 
     angles = []
+    angle_times = []
     normals = []
     drill_vecs = []
 
@@ -130,6 +219,8 @@ def drill_orientation(stream: np.ndarray, timepts: np.ndarray,
     for i, t in enumerate(timepts):
         ind = np.argmin(np.abs(force_times - t))
         if np.isclose(np.abs(force_times[ind] - t), 0) and np.linalg.norm(force_stream[ind]) > med:
+
+            angle_times.append(t)
 
             normal = force_stream[ind]
             normal = np.divide(normal, np.linalg.norm(normal))
@@ -149,7 +240,17 @@ def drill_orientation(stream: np.ndarray, timepts: np.ndarray,
 
         angles.append(90 - angle)
 
-    return angles
+    avg_stroke_angle = []
+    for i in range(sum(strokes)):
+
+        stroke_mask = [at >= stroke_times[i] and at <
+                       stroke_times[i+1] for at in angle_times]
+        stroke_angles = np.array(angles)[stroke_mask]
+        avg_stroke_angle.append(np.mean(stroke_angles))
+
+    A = np.array(avg_stroke_angle)
+    avg_stroke_angle = A[~np.isnan(A)]
+    return avg_stroke_angle
 
 
 def get_stroke_indices(stroke_cutoffs):
@@ -316,7 +417,6 @@ def extract_jerk(drill_pose, timestamps, stroke_indices):
     stroke_az = []
 
     # Store acceleration information for jerk
-    stroke_accelerations = []
     for i in range(len(stroke_vx)):
         stroke_ax.append(np.gradient(stroke_vx[i], stroke_t[i]))
         stroke_ay.append(np.gradient(stroke_vy[i], stroke_t[i]))

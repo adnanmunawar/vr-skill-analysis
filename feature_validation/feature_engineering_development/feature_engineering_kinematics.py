@@ -233,7 +233,6 @@ def extract_jerk(drill_pose, timestamps, stroke_indices):
     stroke_az = []
 
     # Store acceleration information for jerk
-    stroke_accelerations = []
     for i in range(len(stroke_vx)):
         stroke_ax.append(np.gradient(stroke_vx[i], stroke_t[i]))
         stroke_ay.append(np.gradient(stroke_vy[i], stroke_t[i]))
