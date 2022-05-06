@@ -251,7 +251,8 @@ def drill_orientation(strokes: np.ndarray, stroke_times: np.ndarray,
         stroke_mask = [at >= stroke_times[i] and at <
                        stroke_times[i+1] for at in angle_times]
         stroke_angles = np.array(angles)[stroke_mask]
-        avg_stroke_angle.append(np.mean(stroke_angles))
+        avg_stroke_angle.append(np.mean(stroke_angles)
+                                if sum(stroke_mask) > 0 else np.nan)
 
     A = np.array(avg_stroke_angle)
     avg_stroke_angle = A[~np.isnan(A)]
