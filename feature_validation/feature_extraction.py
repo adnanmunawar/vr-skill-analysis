@@ -7,20 +7,6 @@ from scipy import signal
 from scipy import fft
 from scipy import integrate
 
-# fname = '../data/d4/20220302_131424.hdf5'
-# fname = '../data/20220408_191041.hdf5'
-# fname = '../data/20220408_210049.hdf5' # 3 strokes
-# fname = '../data/20220409_184944.hdf5' # perpendicular drill angle
-# fname = '../data/20220409_185037.hdf5' # varying drill angle
-
-# fname = '../Angles/45deg.hdf5' # 45 degree drill angle
-fname = '../Angles/90deg.hdf5'  # 90 degree drill angle
-# fname = '../Angles/random.hdf5' # random drill angle
-
-f = h5py.File(fname, 'r')
-print('File keys', f.keys())
-print(type(f))
-
 
 def stats_per_stroke(stroke_arr: np.ndarray):
 
