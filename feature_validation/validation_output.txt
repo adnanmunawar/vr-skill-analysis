@@ -19,7 +19,7 @@ Now testing:  Strokes/three_strokes.hdf5
 	velocity:  0.004498837450236364
 	acceleration:  0.008269209250284132
 	jerk:  0.025570576689191563
-	stroke force:  0.0
+	stroke force:  0.09622727636176936
 	bone removal rate:  0.0
 	stroke length:  0.036776332089373996
 	curvature:  9779089.795169555
@@ -184,7 +184,7 @@ Now testing:  Duration/20sec.hdf5
 	velocity:  0.004498837450236364
 	acceleration:  0.008269209250284132
 	jerk:  0.025570576689191563
-	stroke force:  0.0
+	stroke force:  0.09622727636176936
 	bone removal rate:  0.0
 	stroke length:  0.036776332089373996
 	curvature:  9779089.795169555
@@ -199,7 +199,7 @@ Now testing:  Angles/45deg.hdf5
 	velocity:  0.005414845882437159
 	acceleration:  0.0065668970044684295
 	jerk:  0.013124119684898407
-	stroke force:  0.21963169707905228
+	stroke force:  0.27837590487576097
 	bone removal rate:  144839.61926943663
 	stroke length:  0.017708241034089446
 	curvature:  240.46111227990417
@@ -214,7 +214,7 @@ Now testing:  Angles/90deg.hdf5
 	velocity:  0.005327177891109388
 	acceleration:  0.007604987756977798
 	jerk:  0.014106124797280708
-	stroke force:  0.0
+	stroke force:  0.17338839235399983
 	bone removal rate:  0.0
 	stroke length:  0.04988660211682874
 	curvature:  4458809.242257787
@@ -229,7 +229,7 @@ Now testing:  Angles/random.hdf5
 	velocity:  0.00857693799521941
 	acceleration:  0.010718199115404564
 	jerk:  0.019693832915654547
-	stroke force:  0.04895148636393076
+	stroke force:  0.28883977534321975
 	bone removal rate:  47272.00235274733
 	stroke length:  0.046094937627988206
 	curvature:  307.88655469959303

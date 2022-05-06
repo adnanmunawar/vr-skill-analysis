@@ -60,7 +60,7 @@ def validate_stroke_force(f):
     mean, med, maxi = ft.stats_per_stroke(ft.stroke_force(
         strokes, stroke_times, force['wrench'][()], force['time_stamp'][()]))
 
-    print('\tstroke force: ', med)
+    print('\tstroke force: ', maxi)
 
 
 def validate_removal_rate(f):
