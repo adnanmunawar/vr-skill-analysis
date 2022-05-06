@@ -1,0 +1,242 @@
+
+Now testing:  Strokes/zero_strokes.hdf5
+	stroke count:  0
+	velocity:  0.00012166003492360189
+	acceleration:  0.0002803933222187951
+	jerk:  0.0006486440327058361
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0
+	curvature:  1.8058305189681217e+25
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  Strokes/three_strokes.hdf5
+	stroke count:  3
+	velocity:  0.004498837450236364
+	acceleration:  0.008269209250284132
+	jerk:  0.025570576689191563
+	stroke force:  0.0
+	bone removal rate:  0.0
+	stroke length:  0.036776332089373996
+	curvature:  9779089.795169555
+	duration:  17.348564624786377
+	angles:
+		mean:  42.13148226780885
+		median:  42.13148226780885
+		max:  42.13148226780885
+
+Now testing:  Strokes/nine_strokes.hdf5
+	stroke count:  1
+	velocity:  0.015684706161500236
+	acceleration:  0.014561888504831783
+	jerk:  0.014234525033178192
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.15825906398062026
+	curvature:  394.598362360873
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  Kinematics/slow_constant.hdf5
+	stroke count:  1
+	velocity:  0.006323872957291272
+	acceleration:  0.002235749782851291
+	jerk:  0.0023931277447008952
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.057034729782026436
+	curvature:  28165.860692263348
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  Kinematics/fast_constant.hdf5
+	stroke count:  2
+	velocity:  0.10944741760284146
+	acceleration:  0.12618584948391537
+	jerk:  0.3446138142099126
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.5462499600327984
+	curvature:  267.4336225861881
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  Kinematics/slow_jerky.hdf5
+	stroke count:  2
+	velocity:  0.007973517574003712
+	acceleration:  0.006297109210045989
+	jerk:  0.012783180729296927
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.09325170119701512
+	curvature:  762.7244192475257
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  Kinematics/fast_jerky.hdf5
+	stroke count:  3
+	velocity:  0.06060912754852371
+	acceleration:  0.09500368289448671
+	jerk:  0.17056899245864982
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.3372295411688459
+	curvature:  72.88514504612559
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  ForceRemove/no_force_removal.hdf5
+	stroke count:  0
+	velocity:  0.00012166003492360189
+	acceleration:  0.0002803933222187951
+	jerk:  0.0006486440327058361
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0
+	curvature:  1.8058305189681217e+25
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  ForceRemove/low_force_removal.hdf5
+	stroke count:  1
+	velocity:  0.002431169688397259
+	acceleration:  0.0029556152637704434
+	jerk:  0.006090692227607801
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.00834325406656956
+	curvature:  2303.3081030122275
+	duration:  13.594826698303223
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  ForceRemove/high_force_removal.hdf5
+	stroke count:  1
+	velocity:  0.002994756751939201
+	acceleration:  0.006817427858733393
+	jerk:  0.015576960545096132
+	stroke force:  1.1199667246611742
+	bone removal rate:  145329.08953709202
+	stroke length:  0.028934331133525525
+	curvature:  173187376.8521828
+	duration:  11.337188243865967
+	angles:
+		mean:  55.57470218693278
+		median:  55.57470218693278
+		max:  55.57470218693278
+
+Now testing:  LenCurve/short_straight.hdf5
+	stroke count:  1
+	velocity:  0.004768500591530057
+	acceleration:  0.005719593804401556
+	jerk:  0.00934601703059273
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.07024239887872728
+	curvature:  1639484.831683911
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  LenCurve/long_curved.hdf5
+	stroke count:  4
+	velocity:  0.0191520190350883
+	acceleration:  0.026777255019606705
+	jerk:  0.05542969014437932
+	stroke force:  0
+	bone removal rate:  0
+	stroke length:  0.1384668357036961
+	curvature:  374955.21266278304
+	duration:  0
+	angles:
+		mean:  0
+		median:  0
+		max:  0
+
+Now testing:  Duration/20sec.hdf5
+	stroke count:  3
+	velocity:  0.004498837450236364
+	acceleration:  0.008269209250284132
+	jerk:  0.025570576689191563
+	stroke force:  0.0
+	bone removal rate:  0.0
+	stroke length:  0.036776332089373996
+	curvature:  9779089.795169555
+	duration:  17.348564624786377
+	angles:
+		mean:  42.13148226780885
+		median:  42.13148226780885
+		max:  42.13148226780885
+
+Now testing:  Angles/45deg.hdf5
+	stroke count:  4
+	velocity:  0.005414845882437159
+	acceleration:  0.0065668970044684295
+	jerk:  0.013124119684898407
+	stroke force:  0.21963169707905228
+	bone removal rate:  144839.61926943663
+	stroke length:  0.017708241034089446
+	curvature:  240.46111227990417
+	duration:  23.411607265472412
+	angles:
+		mean:  48.85148778269692
+		median:  48.85148778269692
+		max:  50.54441401271413
+
+Now testing:  Angles/90deg.hdf5
+	stroke count:  4
+	velocity:  0.005327177891109388
+	acceleration:  0.007604987756977798
+	jerk:  0.014106124797280708
+	stroke force:  0.0
+	bone removal rate:  0.0
+	stroke length:  0.04988660211682874
+	curvature:  4458809.242257787
+	duration:  24.344613075256348
+	angles:
+		mean:  62.44914901561596
+		median:  62.44914901561596
+		max:  62.44914901561596
+
+Now testing:  Angles/random.hdf5
+	stroke count:  3
+	velocity:  0.00857693799521941
+	acceleration:  0.010718199115404564
+	jerk:  0.019693832915654547
+	stroke force:  0.04895148636393076
+	bone removal rate:  47272.00235274733
+	stroke length:  0.046094937627988206
+	curvature:  307.88655469959303
+	duration:  35.44121861457825
+	angles:
+		mean:  41.367245144731285
+		median:  41.367245144731285
+		max:  41.367245144731285
+Validating files... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation complete!
