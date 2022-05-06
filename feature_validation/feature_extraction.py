@@ -343,7 +343,7 @@ def extract_kinematics(drill_pose, timestamps, stroke_indices):
                 curr_stroke[k], curr_stroke[k - 1]))
         stroke_accelerations.append(vel / np.ptp(stroke_t[i]))
 
-    return stroke_velocities, stroke_accelerations
+    return np.array(stroke_velocities), np.array(stroke_accelerations)
 
 
 def preprocess(drill_pose):
@@ -439,7 +439,7 @@ def extract_jerk(drill_pose, timestamps, stroke_indices):
                 curr_stroke[k], curr_stroke[k - 1]))
         stroke_jerks.append(acc / np.ptp(stroke_t[i]))
 
-    return stroke_jerks
+    return np.array(stroke_jerks)
 
 
 def extract_curvature(drill_pose, timestamps, stroke_indices):
@@ -501,4 +501,4 @@ def extract_curvature(drill_pose, timestamps, stroke_indices):
         stroke_curvatures.append(integrate.simpson(
             curvature, stroke_t_copy) / np.ptp(stroke_t_copy))
 
-    return stroke_curvatures
+    return np.array(stroke_curvatures)

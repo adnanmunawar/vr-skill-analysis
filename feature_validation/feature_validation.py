@@ -21,29 +21,109 @@ def validate_stroke_count(f, exp):
     strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    print(f, ' stroke count: ', sum(strokes))
-
-    # assert sum(strokes) == exp
+    if not (sum(strokes) != exp):
+        print(f, ' stroke count test failed!')
+        print('\tgot: ', sum(strokes))
+        print('\texpected: ', exp)
 
 
 def validate_drill_kinematics(f, exp):
-
-    _, _, _ = open_file(f)
-
-
-def validate_stroke_force_and_removal_rate(f, exp):
-
-    _, _, _ = open_file(f)
-
-
-def validate_stroke_length_and_curvature(f, exp):
 
     data, _, _ = open_file(f)
 
     strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    ft.stroke_length(np.array(strokes), data['pose_mastoidectomy_drill'][()])
+    inds = ft.get_stroke_indices(strokes)
+
+    velocities, accelerations = ft.extract_kinematics(
+        data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
+
+    mean, med, maxi = ft.stats_per_stroke(velocities)
+
+    print(f, ' velocity:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
+
+    mean, med, maxi = ft.stats_per_stroke(accelerations)
+
+    print(f, ' acceleration:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
+
+    jerks = ft.extract_jerk(
+        data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
+
+    mean, med, maxi = ft.stats_per_stroke(jerks)
+
+    print(f, ' jerk:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
+
+
+def validate_stroke_force(f, exp):
+
+    data, force, _ = open_file(f)
+
+    strokes, stroke_times = ft.get_strokes(
+        data['pose_mastoidectomy_drill'][()], data['time'][()])
+
+    mean, med, maxi = ft.stats_per_stroke(ft.stroke_force(
+        strokes, stroke_times, force['wrench'][()], force['time_stamp'][()]))
+
+    print(f, ' stroke force:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
+
+
+def validate_removal_rate(f, exp):
+
+    data, _, v_rm = open_file(f)
+
+    strokes, stroke_times = ft.get_strokes(
+        data['pose_mastoidectomy_drill'][()], data['time'][()])
+
+    try:
+        _, med, _ = ft.stats_per_stroke(ft.bone_removal_rate(
+            strokes, stroke_times, data['pose_mastoidectomy_drill'][()], v_rm['time_stamp'][()]))
+    except:
+        med = 0
+
+    print(f, ' bone removal rate:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
+
+
+def validate_stroke_length(f, exp):
+
+    data, _, _ = open_file(f)
+
+    strokes, stroke_times = ft.get_strokes(
+        data['pose_mastoidectomy_drill'][()], data['time'][()])
+
+    mean, med, maxi = ft.stats_per_stroke(ft.stroke_length(
+        np.array(strokes), data['pose_mastoidectomy_drill'][()]))
+
+    print(f, ' stroke length:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
+
+
+def validate_curvature(f, exp):
+
+    data, _, _ = open_file(f)
+
+    strokes, stroke_times = ft.get_strokes(
+        data['pose_mastoidectomy_drill'][()], data['time'][()])
+
+    inds = ft.get_stroke_indices(strokes)
+
+    mean, med, maxi = ft.stats_per_stroke(ft.extract_curvature(
+        data['pose_mastoidectomy_drill'][()], data['time'][()], inds))
+
+    print(f, ' curvature:')
+    print('\tgot: ', med)
+    print('\texpected: ', exp)
 
 
 def validate_procedure_duration(f, exp):
@@ -55,10 +135,10 @@ def validate_procedure_duration(f, exp):
     except:
         dur = 0
 
-    print(f, ' duration: ', dur)
-
-    # assert dur >= exp - 5
-    # assert dur <= exp + 5
+    if not ((dur >= exp - 5) and (dur <= exp + 5)):
+        print(f, ' duration test failed!')
+        print('\tgot: ', dur)
+        print('\texpected: ', exp)
 
 
 def validate_drill_angle(f, exp):
@@ -71,13 +151,10 @@ def validate_drill_angle(f, exp):
     mean, med, maxi = ft.stats_per_stroke(ft.drill_orientation(
         strokes, stroke_times, data['pose_mastoidectomy_drill'][()], data['time'][()], force['wrench'][()], force['time_stamp'][()]))
 
-    print(f, ' angles: ')
-    print('\tmean: ', mean)
-    print('\tmax: ', maxi)
-    print('\tmedian: ', med)
-
-    # assert mean >= exp - 5
-    # assert mean <= exp + 5
+    if not ((med >= exp - 5) and (med <= exp + 5)):
+        print(f, ' angle test failed!')
+        print('\tgot: ', med)
+        print('\texpected: ', exp)
 
 
 def main():
@@ -111,10 +188,13 @@ def main():
     files.append('Angles/90deg.hdf5')
     files.append('Angles/random.hdf5')
 
+    # TODO: populate expected values for each test
     sct_exp = [0, 3, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 3, 4]
     kin_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    frm_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    lcu_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    frc_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    rmv_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    len_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    cur_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     dur_exp = [0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0]
     dra_exp = [0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 90, 45]
 
@@ -124,16 +204,20 @@ def main():
             files[i], sct_exp[i])
         validate_drill_kinematics(
             files[i], kin_exp[i])
-        validate_stroke_force_and_removal_rate(
-            files[i], frm_exp[i])
-        validate_stroke_length_and_curvature(
-            files[i], lcu_exp[i])
+        validate_stroke_force(
+            files[i], frc_exp[i])
+        validate_removal_rate(
+            files[i], rmv_exp[i])
+        validate_stroke_length(
+            files[i], len_exp[i])
+        validate_curvature(
+            files[i], cur_exp[i])
         validate_procedure_duration(
             files[i], dur_exp[0])
         validate_drill_angle(
             files[i], dra_exp[i])
 
-    print('Validation complete: all tests passed!')
+    print('Validation complete!')
 
 
 if __name__ == "__main__":
