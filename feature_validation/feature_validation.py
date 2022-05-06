@@ -3,6 +3,30 @@ import feature_extraction
 from rich.progress import track
 
 
+def validate_stroke_count():
+    return None
+
+
+def validate_drill_kinematics():
+    return None
+
+
+def validate_stroke_force_and_removal_rate():
+    return None
+
+
+def validate_stroke_length_and_curvature():
+    return None
+
+
+def validate_procedure_duration():
+    return None
+
+
+def validate_drill_angle():
+    return None
+
+
 def main():
     files = []
 
