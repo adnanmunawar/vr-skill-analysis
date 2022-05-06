@@ -21,14 +21,15 @@ Mastoidectomy Procedures​ are highly precise surgeries that require the drilli
 ## 2. Repository Contents
 
 | Item | Path |
-|----------------------------------|--------------------------------------------------------|
-| Simulator Setup Documentation    | `~/AMBF Simulator and Phantom Omni Setup.pdf`          |
-| Feature Extraction Dev Scripts   | `~/feature_validation/feature_engineering_development` |
-| Feature Extraction Data          | `~/feature_validation/data/`                           |
-| Feature Validation Scripts       | `~/feature_validation/`                                |
-| Feature Validation Data          | `~/feature_validation/[FEATURE NAME]/`                 |
-| Feature Extraction Script        | `~/extract_features.py`                                |
-| Feature Documentation            | `~/Documentation of Extracted Features.pdf`            |
-| Model Implementations            | `~/models/`                                            |
+|--------------------------------------|--------------------------------------------------------|
+| Simulator Setup Documentation        | `~/AMBF Simulator and Phantom Omni Setup.pdf`          |
+| Simulator Files for Foce Colelction  | `~/sim/`                                               |
+| Feature Extraction Dev Scripts       | `~/feature_validation/feature_engineering_development` |
+| Feature Extraction Data              | `~/feature_validation/data/`                           |
+| Feature Validation Scripts           | `~/feature_validation/`                                |
+| Feature Validation Data              | `~/feature_validation/[FEATURE NAME]/`                 |
+| Feature Extraction Script            | `~/extract_features.py`                                |
+| Feature Documentation                | `~/Documentation of Extracted Features.pdf`            |
+| Model Implementations                | `~/models/`                                            |
 
 Please note that feature extraction code documentation is included in the form of function comments for each extracted feature in the `extract_features.py` file.
