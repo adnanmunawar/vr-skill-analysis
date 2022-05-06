@@ -20,6 +20,9 @@ def stats_per_stroke(stroke_arr: np.ndarray):
             max_ (np.ndarray): maximum of values
     '''
 
+    if not stroke_arr.any():
+        return 0, 0, 0
+
     mean = np.mean(stroke_arr)
     med_ = np.median(stroke_arr)
     max_ = np.max(stroke_arr)
@@ -214,6 +217,8 @@ def drill_orientation(strokes: np.ndarray, stroke_times: np.ndarray,
     drill_vecs = []
 
     forces = force_stream[np.linalg.norm(force_stream, axis=1) > 0]
+    if len(forces) <= 0:
+        return np.array([])
     med = np.median(np.linalg.norm(forces, axis=1))
 
     for i, t in enumerate(timepts):

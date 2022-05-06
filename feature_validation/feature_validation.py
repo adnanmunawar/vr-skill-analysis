@@ -1,7 +1,6 @@
 import h5py
-from pyrsistent import v
+import numpy as np
 import feature_extraction as ft
-import unittest
 from rich.progress import track
 
 
@@ -22,9 +21,9 @@ def validate_stroke_count(f, exp):
     strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    print(sum(strokes))
+    print(f, ' stroke count: ', sum(strokes))
 
-    # unittest.assertEqual(sum(strokes), exp)
+    # assert sum(strokes) == exp
 
 
 def validate_drill_kinematics(f, exp):
@@ -39,19 +38,27 @@ def validate_stroke_force_and_removal_rate(f, exp):
 
 def validate_stroke_length_and_curvature(f, exp):
 
-    _, _, _ = open_file(f)
+    data, _, _ = open_file(f)
+
+    strokes, stroke_times = ft.get_strokes(
+        data['pose_mastoidectomy_drill'][()], data['time'][()])
+
+    ft.stroke_length(np.array(strokes), data['pose_mastoidectomy_drill'][()])
 
 
 def validate_procedure_duration(f, exp):
 
-    data, _, v_rm = open_file(f)
+    _, _, v_rm = open_file(f)
 
-    dur = ft.procedure_duration(data['time'][()])
+    dur = 0
 
-    print(dur)
+    if np.array(v_rm).any():
+        dur = ft.procedure_duration(v_rm['time_stamp'][()])
 
-    # unittest.assertTrue(dur >= exp - 5)
-    # unittest.assertTrue(dur <= exp + 5)
+    print(f, ' duration: ', dur)
+
+    # assert dur >= exp - 5
+    # assert dur <= exp + 5
 
 
 def validate_drill_angle(f, exp):
@@ -64,32 +71,22 @@ def validate_drill_angle(f, exp):
     mean, med, maxi = ft.stats_per_stroke(ft.drill_orientation(
         strokes, stroke_times, data['pose_mastoidectomy_drill'][()], data['time'][()], force['wrench'][()], force['time_stamp'][()]))
 
-    print('mean: ', mean)
-    print('max: ', maxi)
-    print('median: ', med)
+    print(f, ' angles: ')
+    print('\tmean: ', mean)
+    print('\tmax: ', maxi)
+    print('\tmedian: ', med)
 
-    # unittest.assertTrue(mean >= exp - 20)
-    # unittest.assertTrue(mean <= exp + 20)
+    # assert mean >= exp - 5
+    # assert mean <= exp + 5
 
 
 def main():
     files = []
-    j = 0
 
     # Files for testing stroke count
     files.append('Strokes/zero_strokes.hdf5')
     files.append('Strokes/three_strokes.hdf5')
     files.append('Strokes/nine_strokes.hdf5')
-
-    sc_exp = [0, 3, 9]
-
-    validate_stroke_count(files[0], sc_exp[0])
-    validate_stroke_count(files[1], sc_exp[1])
-    validate_stroke_count(files[2], sc_exp[2])
-
-    validate_procedure_duration(files[0], 0)
-    validate_procedure_duration(files[1], 0)
-    validate_procedure_duration(files[2], 0)
 
     # Files for testing kinematics
     files.append('Kinematics/slow_constant.hdf5')
@@ -109,37 +106,32 @@ def main():
     # Files for testing procedure duration
     files.append('Duration/20sec.hdf5')
 
-    d_exp = [20]
-
-    validate_stroke_count(files[12], sc_exp[0])
-    validate_procedure_duration(files[12], d_exp[0])
-
     # Files for testing drill orientation
     files.append('Angles/45deg.hdf5')
     files.append('Angles/90deg.hdf5')
     files.append('Angles/random.hdf5')
 
-    a_exp = [45, 90, 45]
-
-    validate_stroke_count(files[13], 4)
-    validate_drill_angle(files[13], a_exp[0])
-
-    validate_stroke_count(files[14], 3)
-    validate_drill_angle(files[14], a_exp[1])
-
-    validate_stroke_count(files[15], 4)
-    validate_drill_angle(files[15], a_exp[2])
-
-    print('done with nice stuff and pre testing')
+    sct_exp = [0, 3, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 3, 4]
+    kin_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    frm_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    lcu_exp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    dur_exp = [0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0]
+    dra_exp = [0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 90, 45]
 
     for i in track(range(len(files)), 'Validating files...'):
 
-        validate_stroke_count(files[i], sc_exp[i])
-        validate_drill_kinematics()
-        validate_stroke_force_and_removal_rate()
-        validate_stroke_length_and_curvature()
-        validate_procedure_duration(files[i], d_exp[0])
-        validate_drill_angle(files[i], a_exp[i-13])
+        validate_stroke_count(
+            files[i], sct_exp[i])
+        validate_drill_kinematics(
+            files[i], kin_exp[i])
+        validate_stroke_force_and_removal_rate(
+            files[i], frm_exp[i])
+        validate_stroke_length_and_curvature(
+            files[i], lcu_exp[i])
+        validate_procedure_duration(
+            files[i], dur_exp[0])
+        validate_drill_angle(
+            files[i], dra_exp[i])
 
     print('Validation complete: all tests passed!')
 
