@@ -26,8 +26,9 @@ def stats_per_stroke(stroke_arr: np.ndarray):
     mean = np.mean(stroke_arr)
     med_ = np.median(stroke_arr)
     max_ = np.max(stroke_arr)
+    sdev_ = np.std(stroke_arr)
 
-    return mean, med_, max_
+    return mean, med_, max_, sdev_
 
 
 def get_strokes(stream: np.ndarray, timepts: np.ndarray, k=6):
@@ -114,7 +115,7 @@ def stroke_force(strokes: np.ndarray, stroke_times: np.ndarray,
 
         stroke_mask = [ft >= stroke_times[i] and ft <
                        stroke_times[i+1] for ft in force_times]
-        stroke_forces = np.linalg.norm(force_stream[stroke_mask], axis=1)
+        stroke_forces = np.linalg.norm(force_stream[stroke_mask[:len(force_stream)]], axis=1)
         avg_stroke_force.append(np.mean(stroke_forces))
 
     return np.array(avg_stroke_force)

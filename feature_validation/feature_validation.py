@@ -1,3 +1,4 @@
+import os
 from statistics import median
 import h5py
 import numpy as np
@@ -9,7 +10,7 @@ def open_file(file):
     f = h5py.File(file, 'r')
 
     data = f['data']
-    force = f['force']
+    force = f['drill_force_feedback']
     v_rm = f['voxels_removed']
 
     return data, force, v_rm
@@ -19,35 +20,41 @@ def validate_stroke_count(f):
 
     data, _, _ = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
+    try:
+        strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
+        print('\tstroke count: ', sum(strokes))
 
-    print('\tstroke count: ', sum(strokes))
+    except Exception as e:
+        print(e)
 
 
 def validate_drill_kinematics(f):
 
     data, _, _ = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
+    try:
+        strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    inds = ft.get_stroke_indices(strokes)
+        inds = ft.get_stroke_indices(strokes)
 
-    velocities, accelerations = ft.extract_kinematics(
-        data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
+        velocities, accelerations = ft.extract_kinematics(
+            data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
 
-    mean, med, maxi = ft.stats_per_stroke(velocities)
-    print('\tvelocity: ', med)
+        mean, med, maxi, sdev = ft.stats_per_stroke(velocities)
+        print('\tvelocity: ', med)
 
-    mean, med, maxi = ft.stats_per_stroke(accelerations)
-    print('\tacceleration: ', med)
+        mean, med, maxi, sdev = ft.stats_per_stroke(accelerations)
+        print('\tacceleration: ', med)
 
-    jerks = ft.extract_jerk(
-        data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
+        jerks = ft.extract_jerk(
+            data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
 
-    mean, med, maxi = ft.stats_per_stroke(jerks)
-    print('\tjerk: ', med)
+        mean, med, maxi, sdev = ft.stats_per_stroke(jerks)
+        print('\tjerk: ', med)
+    except Exception as e:
+        print(e)
 
 
 def validate_stroke_force(f):
@@ -57,8 +64,8 @@ def validate_stroke_force(f):
     strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    mean, med, maxi = ft.stats_per_stroke(ft.stroke_force(
-        strokes, stroke_times, force['wrench'][()], force['time_stamp'][()]))
+    mean, med, maxi, sdev = ft.stats_per_stroke(ft.stroke_force(
+        strokes, stroke_times, force['wrench'][()], force['time_stamp'][()]*1e9))
 
     print('\tstroke force: ', maxi)
 
@@ -67,13 +74,14 @@ def validate_removal_rate(f):
 
     data, _, v_rm = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
-        data['pose_mastoidectomy_drill'][()], data['time'][()])
-
     try:
-        _, med, _ = ft.stats_per_stroke(ft.bone_removal_rate(
-            strokes, stroke_times, data['pose_mastoidectomy_drill'][()], v_rm['time_stamp'][()]))
-    except:
+        strokes, stroke_times = ft.get_strokes(
+            data['pose_mastoidectomy_drill'][()], data['time'][()])
+
+        _, med, _, sdev = ft.stats_per_stroke(ft.bone_removal_rate(
+            strokes, stroke_times, data['pose_mastoidectomy_drill'][()], v_rm['voxel_time_stamp'][()]))
+    except Exception as e:
+        print(e)
         med = 0
 
     print('\tbone removal rate: ', med)
@@ -83,11 +91,15 @@ def validate_stroke_length(f):
 
     data, _, _ = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
-        data['pose_mastoidectomy_drill'][()], data['time'][()])
+    try:
+        strokes, stroke_times = ft.get_strokes(
+            data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    mean, med, maxi = ft.stats_per_stroke(ft.stroke_length(
-        np.array(strokes), data['pose_mastoidectomy_drill'][()]))
+        mean, med, maxi, sdev = ft.stats_per_stroke(ft.stroke_length(
+            np.array(strokes), data['pose_mastoidectomy_drill'][()]))
+    except Exception as e:
+        print(e)
+        med = 0
 
     print('\tstroke length: ', med)
 
@@ -96,13 +108,17 @@ def validate_curvature(f):
 
     data, _, _ = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
+    try:
+        strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    inds = ft.get_stroke_indices(strokes)
+        inds = ft.get_stroke_indices(strokes)
 
-    mean, med, maxi = ft.stats_per_stroke(ft.extract_curvature(
-        data['pose_mastoidectomy_drill'][()], data['time'][()], inds))
+        mean, med, maxi, sdev = ft.stats_per_stroke(ft.extract_curvature(
+            data['pose_mastoidectomy_drill'][()], data['time'][()], inds))
+    except Exception as e:
+        print(e)
+        med = 0
 
     print('\tcurvature: ', med)
 
@@ -123,17 +139,20 @@ def validate_drill_angle(f):
 
     data, force, _ = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
+    try:
+        strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    mean, med, maxi = ft.stats_per_stroke(ft.drill_orientation(
-        strokes, stroke_times, data['pose_mastoidectomy_drill'][()], data['time'][()], force['wrench'][()], force['time_stamp'][()]))
+        mean, med, maxi, sdev = ft.stats_per_stroke(ft.drill_orientation(
+            strokes, stroke_times, data['pose_mastoidectomy_drill'][()], data['time'][()], force['wrench'][()], force['time_stamp'][()]*1e9))
 
-    print('\tangles:')
-    print('\t\tmean: ', mean)
-    print('\t\tmedian: ', med)
-    print('\t\tmax: ', maxi)
+        print('\tangles:')
+        print('\t\tmean: ', mean)
+        print('\t\tmedian: ', med)
+        print('\t\tmax: ', maxi)
 
+    except Exception as e:
+        print(e)
 
 def main():
     files = []
