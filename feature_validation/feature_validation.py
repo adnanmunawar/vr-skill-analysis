@@ -4,6 +4,9 @@ import h5py
 import numpy as np
 import feature_extraction as ft
 from rich.progress import track
+from evaluation_metrics import EvaluationMetrics
+
+eval_metrics = EvaluationMetrics()
 
 
 def open_file(file):
@@ -24,7 +27,7 @@ def validate_stroke_count(f):
         strokes, stroke_times = ft.get_strokes(
         data['pose_mastoidectomy_drill'][()], data['time'][()])
         print('\tstroke count: ', sum(strokes))
-
+        eval_metrics.strokes.count = eval_metrics.strokes.count + sum(strokes)
     except Exception as e:
         print(e)
 
@@ -44,15 +47,18 @@ def validate_drill_kinematics(f):
 
         mean, med, maxi, sdev = ft.stats_per_stroke(velocities)
         print('\tvelocity: ', med)
+        eval_metrics.kinematics.velocity.add_mean(mean)
 
         mean, med, maxi, sdev = ft.stats_per_stroke(accelerations)
         print('\tacceleration: ', med)
+        eval_metrics.kinematics.acceleration.add_mean(mean)
 
         jerks = ft.extract_jerk(
             data['pose_mastoidectomy_drill'][()], data['time'][()], inds)
 
         mean, med, maxi, sdev = ft.stats_per_stroke(jerks)
         print('\tjerk: ', med)
+        eval_metrics.kinematics.jerk.add_mean(mean)
     except Exception as e:
         print(e)
 
@@ -61,13 +67,17 @@ def validate_stroke_force(f):
 
     data, force, _ = open_file(f)
 
-    strokes, stroke_times = ft.get_strokes(
-        data['pose_mastoidectomy_drill'][()], data['time'][()])
+    try:
+        strokes, stroke_times = ft.get_strokes(
+            data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-    mean, med, maxi, sdev = ft.stats_per_stroke(ft.stroke_force(
-        strokes, stroke_times, force['wrench'][()], force['time_stamp'][()]*1e9))
+        mean, med, maxi, sdev = ft.stats_per_stroke(ft.stroke_force(
+            strokes, stroke_times, force['wrench'][()], force['time_stamp'][()]*1e9))
+        eval_metrics.strokes.force.add_mean(mean)
 
-    print('\tstroke force: ', maxi)
+        print('\tstroke force: ', maxi)
+    except Exception as e:
+        print(e)
 
 
 def validate_removal_rate(f):
@@ -78,8 +88,9 @@ def validate_removal_rate(f):
         strokes, stroke_times = ft.get_strokes(
             data['pose_mastoidectomy_drill'][()], data['time'][()])
 
-        _, med, _, sdev = ft.stats_per_stroke(ft.bone_removal_rate(
+        mean, med, _, sdev = ft.stats_per_stroke(ft.bone_removal_rate(
             strokes, stroke_times, data['pose_mastoidectomy_drill'][()], v_rm['voxel_time_stamp'][()]))
+        eval_metrics.removal_rate.add_mean(mean)
     except Exception as e:
         print(e)
         med = 0
@@ -97,6 +108,7 @@ def validate_stroke_length(f):
 
         mean, med, maxi, sdev = ft.stats_per_stroke(ft.stroke_length(
             np.array(strokes), data['pose_mastoidectomy_drill'][()]))
+        eval_metrics.strokes.length.add_mean(mean)
     except Exception as e:
         print(e)
         med = 0
@@ -116,6 +128,7 @@ def validate_curvature(f):
 
         mean, med, maxi, sdev = ft.stats_per_stroke(ft.extract_curvature(
             data['pose_mastoidectomy_drill'][()], data['time'][()], inds))
+        eval_metrics.strokes.curvature.add_mean(mean)
     except Exception as e:
         print(e)
         med = 0
@@ -124,11 +137,11 @@ def validate_curvature(f):
 
 
 def validate_procedure_duration(f):
-
     _, _, v_rm = open_file(f)
 
     try:
-        dur = ft.procedure_duration(v_rm['time_stamp'][()])
+        dur = ft.procedure_duration(v_rm['voxel_time_stamp'][()])
+        eval_metrics.duration = eval_metrics.duration + dur
     except:
         dur = 0
 
@@ -153,6 +166,7 @@ def validate_drill_angle(f):
 
     except Exception as e:
         print(e)
+
 
 def main():
     files = []
@@ -189,24 +203,17 @@ def main():
 
         print('\nNow testing: ', files[i])
 
-        validate_stroke_count(
-            files[i])
-        validate_drill_kinematics(
-            files[i])
-        validate_stroke_force(
-            files[i])
-        validate_removal_rate(
-            files[i])
-        validate_stroke_length(
-            files[i])
-        validate_curvature(
-            files[i])
-        validate_procedure_duration(
-            files[i])
-        validate_drill_angle(
-            files[i])
+        validate_stroke_count(files[i])
+        validate_drill_kinematics(files[i])
+        validate_stroke_force(files[i])
+        validate_removal_rate(files[i])
+        validate_stroke_length(files[i])
+        validate_curvature(files[i])
+        validate_procedure_duration(files[i])
+        validate_drill_angle(files[i])
 
     print('Validation complete!')
+    eval_metrics.print()
 
 
 if __name__ == "__main__":
