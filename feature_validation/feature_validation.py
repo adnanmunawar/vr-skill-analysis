@@ -1,6 +1,7 @@
 import os
 from statistics import median
 import h5py
+import natsort
 import numpy as np
 import feature_extraction as ft
 from rich.progress import track
@@ -13,8 +14,12 @@ def open_file(file):
     f = h5py.File(file, 'r')
 
     data = f['data']
-    force = f['drill_force_feedback']
     v_rm = f['voxels_removed']
+    force = []
+    if 'drill_force_feedback' in f:
+        force = f['drill_force_feedback']
+    elif 'force' in f:
+        force = f['force']
 
     return data, force, v_rm
 
@@ -167,6 +172,15 @@ def validate_drill_angle(f):
     except Exception as e:
         print(e)
 
+
+def validate_sensitive_voxels_removed(f):
+    _, _, vrm = open_file(f)
+
+    try:
+        cnt = eval_metrics.check_voxels_removed(vrm['voxel_color'][()])
+        print('\t\tsensitive voxels removed: ', cnt)
+    except Exception as e:
+        print(e)
 
 def main():
     files = []

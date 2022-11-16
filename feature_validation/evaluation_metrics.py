@@ -50,11 +50,25 @@ class EvaluationMetrics:
         self.kinematics = KinematicMetrics()
         self.removal_rate = Stats()
         self.strokes = StrokeMetrics()
+        self.sensitive_voxels_removed = Counter()
+        self.bone_voxels_removed = Counter()
         self.duration = 0
 
+    def check_voxels_removed(self, voxels_colors):
+        ctr = Counter()
+        for c in voxels_colors:
+            if c[1] == 255 or c[2] == 249 or c[3] == 219:
+                self.bone_voxels_removed.increment()
+            else:
+                self.sensitive_voxels_removed.increment()
+                ctr.increment()
+
+        return ctr.count
     def print(self):
         print('Total Metrics: ')
         print('\t Stroke Count: ', self.strokes.count)
+        print('\t Bone Voxels Removed: ', self.bone_voxels_removed.count)
+        print('\t Sensitive Voxels Removed: ', self.sensitive_voxels_removed.count)
         print('\t Mean Stroke Length: ', self.strokes.length.get_mean())
         print('\t Mean Stroke Curvature: ', self.strokes.curvature.get_mean())
         print('\t Mean Stroke Force: ', self.strokes.force.get_mean())
