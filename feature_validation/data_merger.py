@@ -5,7 +5,6 @@ from natsort import natsorted
 from collections import OrderedDict
 
 
-
 class DataMerger:
     def __init__(self):
         self._data = OrderedDict()
@@ -28,6 +27,7 @@ class DataMerger:
                 self.file_names.append(n)
 
         self.file_names = natsorted(self.file_names)
+        print('Number of Files ', len(self.file_names))
 
         for idx, file_name in enumerate(self.file_names):
             file = h5py.File(file_name, 'r')
@@ -52,7 +52,7 @@ class DataMerger:
                     else:
                         self._data[grp][dset] = np.append(self._data[grp][dset], file[grp][dset][()], axis=0)
             file.close()
-            return self._data
+        return self._data
 
 
 def main():
