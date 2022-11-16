@@ -3,15 +3,14 @@ import numpy.linalg as la
 
 from data_merger import *
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 data_merger = DataMerger()
 files = []
-files.append(['Pete1', '/home/adnan/Downloads/Participant_7/2022-11-11 10:23:45/'])
-files.append(['Pete2', '/home/adnan/Downloads/Participant_7/2022-11-11 10:42:18/'])
-files.append(['Pete3', '/home/adnan/Downloads/Participant_7/2022-11-11 10:47:51/'])
-files.append(['Pete4', '/home/adnan/Downloads/Participant_7/2022-11-11 10:54:32/'])
-files.append(['Pete5', '/home/adnan/Downloads/Participant_7/2022-11-11 10:58:18/'])
+files.append(['P4', '/home/amunawa2/RedCap/Guidance/Participant_4/2022-11-09 19:26:43'])
+# files.append(['P5', '/home/amunawa2/RedCap/Guidance/Participant_5/2022-11-10 13:14:55'])
+files.append(['P5', '/home/amunawa2/RedCap/Guidance/Participant_5/2022-11-10 12:54:16'])
+files.append(['P6', '/home/amunawa2/RedCap/Guidance/Participant_6/2022-11-10 18:16:42'])
+files.append(['P7', '/home/amunawa2/RedCap/Guidance/Participant_7/2022-11-11 10:42:18'])
 mags = []
 
 x_labels = []
