@@ -1,3 +1,6 @@
+import math
+
+
 class Counter:
     def __init__(self):
         self.count = 0
@@ -15,6 +18,8 @@ class Stats:
         self.counter = Counter()
 
     def add_mean(self, val):
+        if math.isnan(val):
+            return
         self.mean = self.mean + val
         self.counter.increment()
 
